@@ -3,6 +3,8 @@ library flutter_rest_api;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -26,8 +28,10 @@ class Api {
   }) :
         url = 'http://$ip'
   {
-    for (ApiError error in errors) {
-      this.errors[error.id] = error;
+    if (errors != null) {
+      for (ApiError error in errors) {
+        this.errors[error.id] = error;
+      }
     }
   }
 
