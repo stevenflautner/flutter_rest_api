@@ -23,6 +23,7 @@ class Api {
   final ErrorDeserializer errorDeserializer;
 //  final errors = Map<String, ApiError>();
   final Duration timeout;
+  final errorStream = StreamController<ApiError>();
 
   Api({
     @required this.ip,
@@ -81,11 +82,14 @@ class Api {
       if (response.statusCode == HttpStatus.ok) {
         return decode;
       } else {
+        ApiError error;
         if (errorDeserializer != null) {
-          throw errorDeserializer(decode);
+          error = errorDeserializer(decode);
         } else {
-          throw InternalServerError();
+          error = InternalServerError();
         }
+        errorStream.add(error);
+        throw error;
       }
 
     } else {
@@ -98,5 +102,7 @@ class Api {
   void setAccessToken(String accessToken) {
     headers[HttpHeaders.authorizationHeader] = "Bearer $accessToken";
   }
+
+  Stream<ApiError> get onError => errorStream.stream;
 
 }
