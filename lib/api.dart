@@ -21,7 +21,6 @@ class Api {
     HttpHeaders.contentTypeHeader: "application/json",
   };
   final ErrorDeserializer errorDeserializer;
-//  final errors = Map<String, ApiError>();
   final Duration timeout;
   final errorStream = StreamController<ApiError>();
 
@@ -30,14 +29,7 @@ class Api {
     this.timeout = const Duration(milliseconds: 14000),
     this.errorDeserializer
   }) :
-        url = 'http://$ip'
-  {
-//    if (errors != null) {
-//      for (ApiError error in errors) {
-//        this.errors[error.id] = error;
-//      }
-//    }
-  }
+        url = 'http://$ip';
 
   Future post(String path, {@required Object data}) async {
     if (data is! String) data = jsonEncode(data);
@@ -86,7 +78,7 @@ class Api {
         if (errorDeserializer != null) {
           error = errorDeserializer(decode);
         } else {
-          error = InternalServerError();
+          error = InternalApiError();
         }
         errorStream.add(error);
         throw error;
@@ -94,7 +86,8 @@ class Api {
 
     } else {
       if (response.statusCode != HttpStatus.ok) {
-        throw InternalServerError();
+        print('ERROR STATUS CODE: ${response.statusCode}');
+        throw InternalApiError();
       }
     }
   }

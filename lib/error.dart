@@ -6,5 +6,5 @@ class ApiError implements Exception {
 
 }
 
-class InternalServerError extends ApiError { InternalServerError() : super('internal-server-error'); }
+class InternalApiError extends ApiError { InternalApiError() : super('internal-server-error'); }
 class ConnectionError extends ApiError { ConnectionError() : super('no-connection'); }
